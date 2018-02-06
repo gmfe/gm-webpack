@@ -10,8 +10,8 @@ package.json
 ```
 "scripts": {
   "start": "NODE_ENV=development node ./node_modules/gm-webpack/start",
-  "testing": "NODE_ENV=production GIT_BRANCH=$BRANCH GIT_COMMIT=$COMMIT node ./node_modules/gm-webpack/testing",
-  "deploy": "NODE_ENV=production GIT_BRANCH=$BRANCH GIT_COMMIT=$COMMIT node ./node_modules/gm-webpack/deploy",
+  "testing": "npm install; NODE_ENV=production GIT_BRANCH=$BRANCH GIT_COMMIT=$COMMIT node ./node_modules/gm-webpack/testing",
+  "deploy": "npm install; NODE_ENV=production GIT_BRANCH=$BRANCH GIT_COMMIT=$COMMIT node ./node_modules/gm-webpack/deploy",
   "monitor": "NODE_ENV=development node ./node_modules/gm-webpack/monitor"
 }
 ```

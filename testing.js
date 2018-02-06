@@ -1,6 +1,5 @@
 const sh = require('shelljs');
 
-sh.exec('npm install');
 sh.exec('mkdir -p build');
 
 require('./dll.js');
