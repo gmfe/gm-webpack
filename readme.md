@@ -1,8 +1,3 @@
-
-# TODO
-
-等js精简后再补map
-
 ## 使用 
 
 package.json
