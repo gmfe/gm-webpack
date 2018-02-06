@@ -1,0 +1,41 @@
+{
+  "name": "gm-webpack",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gmfe/gm-webpack.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gmfe/gm-webpack/issues"
+  },
+  "homepage": "https://github.com/gmfe/gm-webpack#readme",
+  "peerDependencies": {
+    "add-asset-html-webpack-plugin": "^2.1.2",
+    "css-loader": "^0.28.9",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "fs": "0.0.1-security",
+    "happypack": "^4.0.1",
+    "html-webpack-plugin": "^2.30.1",
+    "lodash": "^4.17.5",
+    "shelljs": "^0.8.1",
+    "webpack": "^3.10.0"
+  },
+  "devDependencies": {
+    "add-asset-html-webpack-plugin": "^2.1.2",
+    "css-loader": "^0.28.9",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "fs": "0.0.1-security",
+    "happypack": "^4.0.1",
+    "html-webpack-plugin": "^2.30.1",
+    "lodash": "^4.17.5",
+    "shelljs": "^0.8.1",
+    "webpack": "^3.10.0"
+  }
+}
