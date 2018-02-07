@@ -6,16 +6,16 @@ const _ = require('lodash');
 const env = process.env.NODE_ENV;
 const isDev = env === 'development';
 
-const {version} = getJSON('./package.json');
+const {dllVersion} = getJSON('./package.json');
 
-const dll = `build/dll/${version}.bundle.js`;
+const dll = `build/dll/${dllVersion}.bundle.js`;
 
 let isExist = false;
 
 if (fs.existsSync('build/dll/')) {
     const fileNames = fs.readdirSync('build/dll/');
 
-    isExist = !!_.find(fileNames, fileName => fileName.endsWith(`${version}.bundle.js`));
+    isExist = !!_.find(fileNames, fileName => fileName.endsWith(`${dllVersion}.bundle.js`));
 }
 
 if (isExist) {

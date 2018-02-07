@@ -8,7 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const {getJSON} = require('./service');
-const {version} = getJSON('./package.json');
+const {dllVersion} = getJSON('./package.json');
 const env = process.env.NODE_ENV;
 const isDev = env === 'development';
 
@@ -17,7 +17,7 @@ console.log('webpack.config.js', env);
 function getDLLFileName() {
     const fileNames = fs.readdirSync(path.resolve('./build/dll/'));
 
-    return _.find(fileNames, fileName => fileName.endsWith(`${version}.bundle.js`));
+    return _.find(fileNames, fileName => fileName.endsWith(`${dllVersion}.bundle.js`));
 }
 
 const manifest = getJSON('./build/dll/dll.manifest.json');
@@ -27,7 +27,7 @@ function getConfig(options) {
         entry: {
             'commons': options.commons,
             'index': [
-                './js/index.js'
+                (options.index || './js/index.js')
             ]
         },
         output: {
@@ -98,7 +98,7 @@ function getConfig(options) {
             }),
             new ExtractTextPlugin('css/[name].[contenthash:8].css'),
             new AddAssetHtmlPlugin({
-                filepath: path.resolve(`../gm_static_manage/build/dll/${getDLLFileName()}`),
+                filepath: path.resolve(`./build/dll/${getDLLFileName()}`),
                 outputPath: 'dll',
                 includeSourcemap: false,
                 hash: true,
@@ -124,7 +124,7 @@ function getConfig(options) {
             hot: true,
             contentBase: './',
             historyApiFallback: {
-                index: "/build/index.html"
+                index: options.publicPath + "index.html"
             },
             publicPath: options.publicPath,
             host: '0.0.0.0',
