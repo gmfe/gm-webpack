@@ -43,11 +43,9 @@ webpack.config.dll.js
 const path = require('path');
 const jsonconf = require('gm-jsonconf');
 const siteConfig = jsonconf.parse(path.resolve(__dirname, 'config/deploy.json'));
-const {version} = require('./package.json');
 const webpackConfigDll = require('gm-webpack/webpack.config.dll.js');
 
 const config = webpackConfigDll({
-    version,
     publicPath: siteConfig.publicPath,
     dll: [
         'react', 'react-dom',

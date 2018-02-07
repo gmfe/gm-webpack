@@ -4,6 +4,9 @@ const HappyPack = require('happypack');
 const happyThreadPool = HappyPack.ThreadPool({size: 6});
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+const {getJSON} = require('./service');
+const {dllVersion} = getJSON('./package.json');
+
 const env = process.env.NODE_ENV;
 const isDev = env === 'development';
 
@@ -14,7 +17,7 @@ function getConfig(options) {
         },
         output: {
             path: path.resolve('build'),
-            filename: `dll/[hash:8].${options.version}.bundle.js`,
+            filename: `dll/[hash:8].${dllVersion}.bundle.js`,
             library: 'dll_library',
             publicPath: options.publicPath
         },
