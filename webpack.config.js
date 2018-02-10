@@ -130,7 +130,8 @@ function getConfig(options) {
             host: '0.0.0.0',
             port: options.port,
             disableHostCheck: true,
-            proxy: options.proxy
+            proxy: options.proxy,
+            compress: true
         };
 
         config.devtool = 'eval';
