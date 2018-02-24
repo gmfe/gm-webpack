@@ -3,6 +3,9 @@
 package.json
 
 ```
+"dllVersion": "1.0.0",
+"jsVersion": "1.0.0",
+
 "scripts": {
   "start": "NODE_ENV=development node ./node_modules/gm-webpack/start",
   "testing": "npm install; NODE_ENV=production GIT_BRANCH=$BRANCH GIT_COMMIT=$COMMIT node ./node_modules/gm-webpack/testing",

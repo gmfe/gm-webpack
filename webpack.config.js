@@ -8,7 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const {getJSON} = require('./service');
-const {dllVersion} = getJSON('./package.json');
+const {dllVersion, jsVersion} = getJSON('./package.json');
 const env = process.env.NODE_ENV;
 const isDev = env === 'development';
 
@@ -73,6 +73,7 @@ function getConfig(options) {
             }),
             new webpack.DefinePlugin({
                 __DEBUG__: isDev,
+                __VERSION__: JSON.stringify(jsVersion),
                 "process.env": { // 干掉 https://fb.me/react-minification 提示
                     NODE_ENV: isDev ? JSON.stringify("development") : JSON.stringify("production")
                 }
