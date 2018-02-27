@@ -1,5 +1,7 @@
 ## 使用 
 
+js/index.js
+
 package.json
 
 ```
