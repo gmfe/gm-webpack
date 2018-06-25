@@ -49,7 +49,7 @@ function getConfig(options) {
                 })
             }, {
                 test: /\.json$/,
-                loader: 'happypack/loader?id=json',
+                loader: 'json-loader',
 
             }, {
                 test: /\.(jpe?g|png|gif|svg)$/,
@@ -96,11 +96,6 @@ function getConfig(options) {
                 id: 'css',
                 threadPool: happyThreadPool,
                 loaders: ['css-loader', 'postcss-loader', 'less-loader']
-            }),
-            new HappyPack({
-                id: 'json',
-                threadPool: happyThreadPool,
-                loaders: ['json-loader']
             }),
             new webpack.DllReferencePlugin({
                 context: __dirname,
