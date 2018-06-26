@@ -1,7 +1,8 @@
-const sh = require('shelljs');
+const {shellExec} = require('./service');
 
-require('./dll.js');
+shellExec('NODE_ENV=development node ./node_modules/gm-webpack/dll.js');
 
-sh.exec('rm -rf build/js build/img build/css build/font build/index.html');
+// 移除 build 目录 dll 除外的其他文件
+shellExec('cd ./build; rm -rf `ls | egrep -v dll`; cd ..');
 
-sh.exec('NODE_ENV=development webpack-dev-server');
+shellExec('NODE_ENV=development webpack-dev-server');

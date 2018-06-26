@@ -1,31 +1,28 @@
-const {getJSON} = require('./service');
 const fs = require('fs');
-const sh = require('shelljs');
 const _ = require('lodash');
+const {getJSON, shellExec} = require('./service');
 
 const env = process.env.NODE_ENV;
-const isDev = env === 'development';
 
-const {dllVersion} = getJSON('./package.json');
+let dllFileName = null;
 
-const dll = `build/dll/${dllVersion}.bundle.js`;
-
-let isExist = false;
-
-if (fs.existsSync('build/dll/')) {
-    const fileNames = fs.readdirSync('build/dll/');
-
-    isExist = !!_.find(fileNames, fileName => fileName.endsWith(`${dllVersion}.bundle.js`));
+// 检查 dll 是否构建过
+if (fs.existsSync('./build/dll/dll.version.json')) {
+    const {hash} = getJSON('./build/dll/dll.version.json');
+    const fileNames = fs.readdirSync('./build/dll/');
+    dllFileName = _.find(fileNames, fileName => fileName.endsWith(`${hash}.dll.bundle.js`));
 }
 
-if (isExist) {
-    console.log(`${dll} exist...`);
+if (dllFileName) {
+    console.log(`${dllFileName} exist...`);
 } else {
-    console.log(`${dll} not exist...`);
+    console.log(`dll file not exist...`);
 
-    sh.exec('pwd');
+    shellExec('pwd');
 
-    sh.exec('rm -rf build/dll');
+    shellExec('rm -rf build/dll');
 
-    sh.exec(`NODE_ENV=${isDev ? 'development' : 'production'} webpack --config webpack.config.dll.js --progress --color`);
+    shellExec('mkdir -p build/dll');
+
+    shellExec(`NODE_ENV=${env} webpack --config webpack.config.dll.js`);
 }

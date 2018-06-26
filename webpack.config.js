@@ -1,30 +1,32 @@
 const webpack = require('webpack');
 const path = require('path');
+const os = require('os');
 const fs = require('fs');
 const _ = require('lodash');
 const HappyPack = require('happypack');
-const happyThreadPool = HappyPack.ThreadPool({size: 6});
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const {getJSON} = require('./service');
-const {dllVersion, jsVersion} = getJSON('./package.json');
+
+const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length});
+const {jsVersion} = getJSON('./package.json');
 const env = process.env.NODE_ENV;
 const isDev = env === 'development';
 const manifest = getJSON('./build/dll/dll.manifest.json');
 
-console.log('webpack.config.js', env);
+console.log('webpack.config.js NODE_ENV', env);
 
 function getDLLFileName() {
-    const fileNames = fs.readdirSync(path.resolve('./build/dll/'));
+    const {hash} = getJSON('./build/dll/dll.version.json');
+    const fileNames = fs.readdirSync('./build/dll/');
 
-    return _.find(fileNames, fileName => fileName.endsWith(`${dllVersion}.bundle.js`));
+    return _.find(fileNames, fileName => fileName.endsWith(`${hash}.dll.bundle.js`));
 }
-
 
 function getConfig(options) {
     const config = {
-        mode: isDev ? 'development' : 'production',
+        mode: env,
         entry: {
             'commons': options.commons,
             'index': [
@@ -36,6 +38,9 @@ function getConfig(options) {
             filename: `js/[name].[${isDev ? 'hash' : 'chunkhash'}:8].bundle.js`,
             chunkFilename: 'js/[id].[chunkhash:8].bundle.js',
             publicPath: options.publicPath
+        },
+        optimization: {
+            runtimeChunk: 'single'
         },
         module: {
             rules: [{

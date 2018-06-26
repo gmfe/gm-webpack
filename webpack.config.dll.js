@@ -1,26 +1,33 @@
 const webpack = require('webpack');
 const path = require('path');
+const os = require('os');
+const fs = require('fs');
+const _ = require('lodash');
 const HappyPack = require('happypack');
-const happyThreadPool = HappyPack.ThreadPool({size: 6});
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
-const {getJSON} = require('./service');
-const {dllVersion} = getJSON('./package.json');
+const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length});
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const {getJSON, getDllVersionHash} = require('./service');
+const packageJSON = getJSON('./package.json');
 
 const env = process.env.NODE_ENV;
 
-console.log('dll env', env);
+console.log('webpack.config.dll.js NODE_ENV', env);
 
 const isDev = env === 'development';
 
 function getConfig(options) {
+    // 生成一个文件，记录dll的版本，以便下次判断已构建过，避免重复构建
+    const dllVersionHash = getDllVersionHash(options.dll, packageJSON);
+    fs.writeFileSync('./build/dll/dll.version.json', JSON.stringify({hash: dllVersionHash}));
+
     const config = {
+        mode: env,
         entry: {
             'dll': options.dll
         },
         output: {
             path: path.resolve('build'),
-            filename: `dll/[hash:8].${dllVersion}.bundle.js`,
+            filename: `dll/[hash:8].${dllVersionHash}.dll.bundle.js`,
             library: 'dll_library',
             publicPath: options.publicPath
         },
@@ -30,10 +37,10 @@ function getConfig(options) {
                 loader: 'happypack/loader?id=js'
             }, {
                 test: /\.(css|less)$/,
-                loader: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: 'happypack/loader?id=css'
-                })
+                loader: [
+                    MiniCssExtractPlugin.loader,
+                    'happypack/loader?id=css'
+                ]
             }, {
                 test: /(fontawesome-webfont|glyphicons-halflings-regular|iconfont)\.(woff|woff2|ttf|eot|svg)($|\?)/,
                 use: [{
@@ -47,10 +54,7 @@ function getConfig(options) {
         },
         plugins: [
             new webpack.DefinePlugin({
-                __DEBUG__: isDev,
-                "process.env": { // 干掉 https://fb.me/react-minification 提示
-                    NODE_ENV: isDev ? JSON.stringify("development") : JSON.stringify("production")
-                }
+                __DEBUG__: isDev
             }),
             new webpack.DllPlugin({
                 path: path.resolve('build/dll/dll.manifest.json'),
@@ -73,19 +77,6 @@ function getConfig(options) {
             })
         ]
     };
-
-
-    if (isDev) {
-        config.devtool = 'eval';
-    } else {
-        config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-            cache: true,
-            parallel: true,
-            sourceMap: true
-        }));
-
-        config.devtool = 'source-map';
-    }
 
     return config;
 }
