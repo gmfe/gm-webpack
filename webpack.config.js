@@ -10,7 +10,7 @@ const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const {getJSON} = require('./service');
 
 const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length});
-const {jsVersion} = getJSON('./package.json');
+const {version} = getJSON('./package.json');
 const env = process.env.NODE_ENV;
 const isDev = env === 'development';
 const manifest = getJSON('./build/dll/dll.manifest.json');
@@ -76,7 +76,7 @@ function getConfig(options) {
         plugins: [
             new webpack.DefinePlugin({
                 __DEBUG__: isDev,
-                __VERSION__: JSON.stringify(jsVersion)
+                __VERSION__: JSON.stringify(version)
             }),
             new HappyPack({
                 id: 'js',
@@ -125,6 +125,8 @@ function getConfig(options) {
             compress: true
         };
     } else {
+        config.devtool = 'source-map';
+
         config.plugins.push(new HtmlWebpackPlugin({
             filename: 'index.html',
             template: `template/${options.projectShortName}.html`,

@@ -78,6 +78,10 @@ function getConfig(options) {
         ]
     };
 
+    if (!isDev) {
+        config.devtool = 'source-map';
+    }
+
     return config;
 }
 
