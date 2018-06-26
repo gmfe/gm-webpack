@@ -4,13 +4,14 @@ const fs = require('fs');
 const _ = require('lodash');
 const HappyPack = require('happypack');
 const happyThreadPool = HappyPack.ThreadPool({size: 6});
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const {getJSON} = require('./service');
 const {dllVersion, jsVersion} = getJSON('./package.json');
 const env = process.env.NODE_ENV;
 const isDev = env === 'development';
+const manifest = getJSON('./build/dll/dll.manifest.json');
 
 console.log('webpack.config.js', env);
 
@@ -20,10 +21,10 @@ function getDLLFileName() {
     return _.find(fileNames, fileName => fileName.endsWith(`${dllVersion}.bundle.js`));
 }
 
-const manifest = getJSON('./build/dll/dll.manifest.json');
 
 function getConfig(options) {
     const config = {
+        mode: isDev ? 'development' : 'production',
         entry: {
             'commons': options.commons,
             'index': [
@@ -38,19 +39,15 @@ function getConfig(options) {
         },
         module: {
             rules: [{
-                test: /\.js/,
+                test: /\.js$/,
                 loader: 'happypack/loader?id=js',
 
             }, {
                 test: /\.(css|less)$/,
-                loader: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: 'happypack/loader?id=css'
-                })
-            }, {
-                test: /\.json$/,
-                loader: 'json-loader',
-
+                loader: [
+                    MiniCssExtractPlugin.loader,
+                    'happypack/loader?id=css'
+                ]
             }, {
                 test: /\.(jpe?g|png|gif|svg)$/,
                 use: [{
@@ -72,15 +69,9 @@ function getConfig(options) {
             }]
         },
         plugins: [
-            new webpack.optimize.CommonsChunkPlugin({
-                names: ['commons', 'manifest']
-            }),
             new webpack.DefinePlugin({
                 __DEBUG__: isDev,
-                __VERSION__: JSON.stringify(jsVersion),
-                "process.env": { // 干掉 https://fb.me/react-minification 提示
-                    NODE_ENV: isDev ? JSON.stringify("development") : JSON.stringify("production")
-                }
+                __VERSION__: JSON.stringify(jsVersion)
             }),
             new HappyPack({
                 id: 'js',
@@ -101,23 +92,13 @@ function getConfig(options) {
                 context: __dirname,
                 manifest
             }),
-            new ExtractTextPlugin('css/[name].[contenthash:8].css'),
-            new AddAssetHtmlPlugin({
-                filepath: path.resolve(`./build/dll/${getDLLFileName()}`),
-                outputPath: 'dll',
-                includeSourcemap: false,
-                hash: true,
-                publicPath: options.publicPath + 'dll/'
+            new MiniCssExtractPlugin({
+                filename: 'css/[name].[contenthash:8].css'
             })
         ]
     };
 
     if (isDev) {
-        config.entry.commons.unshift(`webpack-dev-server/client?http://localhost:${options.port}`);
-        config.entry.commons.unshift('webpack/hot/only-dev-server');
-        config.entry.commons.unshift('react-hot-loader/patch');
-
-        config.plugins.push(new webpack.NamedModulesPlugin());
         config.plugins.push(new webpack.HotModuleReplacementPlugin());
 
         config.plugins.push(new HtmlWebpackPlugin({
@@ -138,8 +119,6 @@ function getConfig(options) {
             proxy: options.proxy,
             compress: true
         };
-
-        config.devtool = 'eval';
     } else {
         config.plugins.push(new webpack.optimize.UglifyJsPlugin({
             cache: true,
@@ -153,9 +132,16 @@ function getConfig(options) {
             branch: process.env.GIT_BRANCH || 'master',
             commit: process.env.GIT_COMMIT || ''
         }));
-
-        config.devtool = 'source-map';
     }
+
+    // 要后于 HtmlWebpackPlugin
+    config.plugins.push(new AddAssetHtmlPlugin({
+        filepath: path.resolve(`./build/dll/${getDLLFileName()}`),
+        outputPath: 'dll',
+        includeSourcemap: false,
+        hash: true,
+        publicPath: options.publicPath + 'dll/'
+    }));
 
     return config;
 }

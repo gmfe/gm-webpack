@@ -8,6 +8,9 @@ const {getJSON} = require('./service');
 const {dllVersion} = getJSON('./package.json');
 
 const env = process.env.NODE_ENV;
+
+console.log('dll env', env);
+
 const isDev = env === 'development';
 
 function getConfig(options) {
