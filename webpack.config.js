@@ -125,12 +125,6 @@ function getConfig(options) {
             compress: true
         };
     } else {
-        config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-            cache: true,
-            parallel: true,
-            sourceMap: true
-        }));
-
         config.plugins.push(new HtmlWebpackPlugin({
             filename: 'index.html',
             template: `template/${options.projectShortName}.html`,
