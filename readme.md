@@ -28,13 +28,7 @@ const config = webpackConfig({
     publicPath: siteConfig.publicPath,
     port: siteConfig.port,
     proxy: siteConfig.proxy,
-    projectShortName: 'manage',
-    commons: [
-        'react-gm',
-        'gm-font/iconfont.css',
-        'gm-util',
-        'gm_static_storage'
-    ]
+    projectShortName: 'manage'
 });
 
 module.exports = config;

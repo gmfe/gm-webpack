@@ -27,12 +27,7 @@ function getDLLFileName() {
 function getConfig(options) {
     const config = {
         mode: env,
-        entry: {
-            'commons': options.commons,
-            'index': [
-                (options.index || './js/index.js')
-            ]
-        },
+        entry: options.index || './js/index.js',
         output: {
             path: path.resolve('build'),
             filename: `js/[name].[${isDev ? 'hash' : 'chunkhash'}:8].bundle.js`,
