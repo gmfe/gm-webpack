@@ -9,8 +9,8 @@ package.json
 
 "scripts": {
   "start": "node ./node_modules/gm-webpack/start",
-  "testing": "GIT_BRANCH=$BRANCH GIT_COMMIT=$COMMIT node ./node_modules/gm-webpack/testing",
-  "deploy": "GIT_BRANCH=$BRANCH GIT_COMMIT=$COMMIT node ./node_modules/gm-webpack/deploy",
+  "testing": "npm i; GIT_BRANCH=$BRANCH GIT_COMMIT=$COMMIT node ./node_modules/gm-webpack/testing",
+  "deploy": "npm i; GIT_BRANCH=$BRANCH GIT_COMMIT=$COMMIT node ./node_modules/gm-webpack/deploy",
   "monitor": "node ./node_modules/gm-webpack/monitor"
 }
 ```
