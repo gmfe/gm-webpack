@@ -74,7 +74,8 @@ function getConfig(options) {
                 id: 'css',
                 threadPool: happyThreadPool,
                 loaders: ['css-loader', 'less-loader']
-            })
+            }),
+            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
         ]
     };
 

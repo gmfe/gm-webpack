@@ -99,7 +99,8 @@ function getConfig(options) {
             }),
             new MiniCssExtractPlugin({
                 filename: 'css/[name].[contenthash:8].css'
-            })
+            }),
+            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
         ]
     };
 
