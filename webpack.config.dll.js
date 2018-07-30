@@ -17,7 +17,6 @@ const isDev = env === 'development'
 function getConfig (options) {
   // 生成一个文件，记录dll的版本，以便下次判断已构建过，避免重复构建
   const dllVersionHash = getDllVersionHash(options.dll, packageJSON)
-  fs.writeFileSync('./build/dll/dll.version.json', JSON.stringify({hash: dllVersionHash}))
 
   const config = {
     mode: env,

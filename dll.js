@@ -6,11 +6,12 @@ const webpackDll = require('../../webpack.config.dll')
 const env = process.env.NODE_ENV
 
 let dllFileName = null
+let dllVersionHash = null
 
 // 检查 dll 是否构建过
 if (fs.existsSync('./build/dll/dll.version.json')) {
   const {hash} = getJSON('./build/dll/dll.version.json')
-  const dllVersionHash = getDllVersionHash(webpackDll.entry.dll, getJSON('./package.json'))
+  dllVersionHash = getDllVersionHash(webpackDll.entry.dll, getJSON('./package.json'))
 
   if (hash === dllVersionHash) {
     const fileNames = fs.readdirSync('./build/dll/')
@@ -26,6 +27,8 @@ if (dllFileName) {
   shellExec('rm -rf build/dll')
 
   shellExec('mkdir -p build/dll')
+
+  fs.writeFileSync('./build/dll/dll.version.json', JSON.stringify({hash: dllVersionHash}))
 
   shellExec(`NODE_ENV=${env} webpack --config webpack.config.dll.js`)
 }
