@@ -40,8 +40,8 @@ function getConfig (options) {
     module: {
       rules: [{
         test: /\.js$/,
-        loader: 'happypack/loader?id=js'
-
+        loader: 'happypack/loader?id=js',
+        ...options.jsModuleRule
       }, {
         test: /\.(css|less)$/,
         loader: [
