@@ -5,6 +5,7 @@ const fs = require('fs')
 const HappyPack = require('happypack')
 const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const {getJSON, getDllVersionHash} = require('./service')
 const packageJSON = getJSON('./package.json')
 
@@ -79,6 +80,15 @@ function getConfig (options) {
 
   if (!isDev) {
     config.devtool = 'source-map'
+
+    config.optimization = config.optimization || {}
+    config.optimization.minimizer = [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          mangle: false // Note `mangle.properties` is `false` by default.
+        }
+      })
+    ]
   }
 
   return config
