@@ -7,6 +7,7 @@ const HappyPack = require('happypack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const {getJSON} = require('./service')
 
 const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
@@ -129,6 +130,15 @@ function getConfig (options) {
       branch: process.env.GIT_BRANCH || 'master',
       commit: process.env.GIT_COMMIT || ''
     }))
+
+    config.optimization = config.optimization || {}
+    config.optimization.minimizer = [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          mangle: false // Note `mangle.properties` is `false` by default.
+        }
+      })
+    ]
   }
 
   // 要后于 HtmlWebpackPlugin
