@@ -48,6 +48,7 @@ function getConfig (options) {
               }
               return context.includes('locales') && !context.includes('node_modules')
             },
+            minSize: 0,
             chunks: 'initial',
             priority: 10,
           },
