@@ -36,7 +36,23 @@ function getConfig (options) {
       publicPath: options.publicPath
     },
     optimization: {
-      runtimeChunk: 'single'
+      runtimeChunk: 'single',
+      splitChunks: {
+        cacheGroups: {
+          locale: {
+            name: 'locale',
+            test: (module) => {
+              let { context } = module
+              if(!context) {
+                return false
+              }
+              return context.includes('locales') && !context.includes('node_modules')
+            },
+            chunks: 'initial',
+            priority: 10,
+          },
+        }
+      }
     },
     module: {
       rules: [{
@@ -90,7 +106,6 @@ function getConfig (options) {
         loaders: ['css-loader', 'postcss-loader', 'less-loader']
       }),
       new webpack.DllReferencePlugin({
-        context: __dirname,
         manifest
       }),
       new MiniCssExtractPlugin({
