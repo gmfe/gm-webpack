@@ -135,7 +135,8 @@ function getConfig (options) {
       port: options.port,
       disableHostCheck: true,
       proxy: options.proxy,
-      compress: true
+      compress: true,
+      https: options.https || false
     }
   } else {
     config.devtool = 'source-map'
