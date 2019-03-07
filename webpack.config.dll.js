@@ -5,7 +5,7 @@ const fs = require('fs')
 const HappyPack = require('happypack')
 const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const {getJSON, getDllVersionHash} = require('./service')
 const packageJSON = getJSON('./package.json')
 
@@ -83,8 +83,8 @@ function getConfig (options) {
 
     config.optimization = config.optimization || {}
     config.optimization.minimizer = [
-      new UglifyJsPlugin({
-        uglifyOptions: {
+      new TerserPlugin({
+        terserOptions: {
           mangle: false // Note `mangle.properties` is `false` by default.
         }
       })
