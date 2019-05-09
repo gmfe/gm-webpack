@@ -8,24 +8,24 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const {getJSON} = require('./service')
+const { getJSON } = require('./service')
 
-const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
-const {version} = getJSON('./package.json')
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
+const { version } = getJSON('./package.json')
 const env = process.env.NODE_ENV
 const isDev = env === 'development'
 const manifest = getJSON('./build/dll/dll.manifest.json')
 
 console.log('webpack.config.js NODE_ENV', env)
 
-function getDLLFileName () {
-  const {hash} = getJSON('./build/dll/dll.version.json')
+function getDLLFileName() {
+  const { hash } = getJSON('./build/dll/dll.version.json')
   const fileNames = fs.readdirSync('./build/dll/')
 
   return _.find(fileNames, fileName => fileName.endsWith(`${hash}.dll.bundle.js`))
 }
 
-function getConfig (options) {
+function getConfig(options) {
   const config = {
     mode: env,
     entry: options.index || './js/index.js',
@@ -43,7 +43,7 @@ function getConfig (options) {
             name: 'locale',
             test: (module) => {
               let { context } = module
-              if(!context) {
+              if (!context) {
                 return false
               }
               return context.includes('locales') && !context.includes('node_modules')
@@ -55,36 +55,54 @@ function getConfig (options) {
         }
       }
     },
+    resolve: {
+      extension: [
+        '.js',
+        '.jsx',
+        '.ts',
+        '.tsx',
+      ]
+    },
     module: {
-      rules: [{
-        test: /\.js$/,
-        loader: 'happypack/loader?id=js',
-        ...options.jsModuleRule
-      }, {
-        test: /\.(css|less)$/,
-        loader: [
-          MiniCssExtractPlugin.loader,
-          'happypack/loader?id=css'
-        ]
-      }, {
-        test: /\.(jpe?g|png|gif|svg)$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 1024,
-            name: 'img/[name].[hash:8].[ext]'
-          }
-        }]
-      }, {
-        test: /(fontawesome-webfont|glyphicons-halflings-regular|iconfont)\.(woff|woff2|ttf|eot|svg)($|\?)/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 1024,
-            name: 'font/[name].[hash:8].[ext]'
-          }
-        }]
-      }]
+      rules: [
+        {
+          test: /\.js$/,
+          loader: 'happypack/loader?id=js',
+          ...options.jsModuleRule
+        },
+        {
+          test: /\.(ts|tsx)?$/,
+          loader: 'ts-loader',
+          exclude: /node_modules/
+        },
+        {
+          test: /\.(css|less)$/,
+          loader: [
+            MiniCssExtractPlugin.loader,
+            'happypack/loader?id=css'
+          ]
+        },
+        {
+          test: /\.(jpe?g|png|gif|svg)$/,
+          use: [{
+            loader: 'url-loader',
+            options: {
+              limit: 1024,
+              name: 'img/[name].[hash:8].[ext]'
+            }
+          }]
+        },
+        {
+          test: /(fontawesome-webfont|glyphicons-halflings-regular|iconfont)\.(woff|woff2|ttf|eot|svg)($|\?)/,
+          use: [{
+            loader: 'url-loader',
+            options: {
+              limit: 1024,
+              name: 'font/[name].[hash:8].[ext]'
+            }
+          }]
+        }
+      ]
     },
     plugins: [
       new webpack.DefinePlugin({

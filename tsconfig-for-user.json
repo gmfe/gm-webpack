@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es2016",
+      "es2017",
+      "dom"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "*": [ "types/*" ]
+    },
+    "strict": true,
+    "jsx": "react",
+    "module": "es6",
+    "target": "es6",
+    "sourceMap": true,
+    "allowJs": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  }
+}
