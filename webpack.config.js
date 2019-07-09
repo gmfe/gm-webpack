@@ -67,7 +67,7 @@ function getConfig (options) {
           'happypack/loader?id=css'
         ]
       }, {
-        test: /\.(jpe?g|png|gif|svg)$/,
+        test: /\.(jpe?g|png|gif)$/,
         use: [{
           loader: 'url-loader',
           options: {
