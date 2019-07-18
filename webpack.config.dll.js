@@ -32,7 +32,7 @@ function getConfig (options) {
     },
     module: {
       rules: [{
-        test: /\.js/,
+        test: /\.js$/,
         loader: 'happypack/loader?id=js'
       }, {
         test: /\.(css|less)$/,
