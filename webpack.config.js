@@ -8,10 +8,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const {getJSON} = require('./service')
+const { getJSON } = require('./service')
 
-const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
-const {version} = getJSON('./package.json')
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
+const { version } = getJSON('./package.json')
 const env = process.env.NODE_ENV
 const isDev = env === 'development'
 const manifest = getJSON('./build/dll/dll.manifest.json')
@@ -19,10 +19,12 @@ const manifest = getJSON('./build/dll/dll.manifest.json')
 console.log('webpack.config.js NODE_ENV', env)
 
 function getDLLFileName () {
-  const {hash} = getJSON('./build/dll/dll.version.json')
+  const { hash } = getJSON('./build/dll/dll.version.json')
   const fileNames = fs.readdirSync('./build/dll/')
 
-  return _.find(fileNames, fileName => fileName.endsWith(`${hash}.dll.bundle.js`))
+  return _.find(fileNames, fileName =>
+    fileName.endsWith(`${hash}.dll.bundle.js`)
+  )
 }
 
 function getConfig (options) {
@@ -41,50 +43,58 @@ function getConfig (options) {
         cacheGroups: {
           locale: {
             name: 'locale',
-            test: (module) => {
+            test: module => {
               let { context } = module
-              if(!context) {
+              if (!context) {
                 return false
               }
-              return context.includes('locales') && !context.includes('node_modules')
+              return (
+                context.includes('locales') && !context.includes('node_modules')
+              )
             },
             minSize: 0,
             chunks: 'initial',
-            priority: 10,
-          },
+            priority: 10
+          }
         }
       }
     },
     module: {
-      rules: [{
-        test: /\.js$/,
-        loader: 'happypack/loader?id=js',
-        ...options.jsModuleRule
-      }, {
-        test: /\.(css|less)$/,
-        loader: [
-          MiniCssExtractPlugin.loader,
-          'happypack/loader?id=css'
-        ]
-      }, {
-        test: /\.(jpe?g|png|gif)$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 1024,
-            name: 'img/[name].[hash:8].[ext]'
-          }
-        }]
-      }, {
-        test: /(fontawesome-webfont|glyphicons-halflings-regular|iconfont)\.(woff|woff2|ttf|eot|svg)($|\?)/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 1024,
-            name: 'font/[name].[hash:8].[ext]'
-          }
-        }]
-      }]
+      rules: [
+        {
+          test: /\.js$/,
+          loader: 'happypack/loader?id=js',
+          ...options.jsModuleRule
+        },
+        {
+          test: /\.(css|less)$/,
+          loader: [MiniCssExtractPlugin.loader, 'happypack/loader?id=css']
+        },
+        {
+          test: /\.(jpe?g|png|gif)$/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 1024,
+                name: 'img/[name].[hash:8].[ext]'
+              }
+            }
+          ]
+        },
+        {
+          test: /(fontawesome-webfont|glyphicons-halflings-regular|iconfont)\.(woff|woff2|ttf|eot|svg)($|\?)/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 1024,
+                name: 'font/[name].[hash:8].[ext]'
+              }
+            }
+          ]
+        }
+      ]
     },
     plugins: [
       new webpack.DefinePlugin({
@@ -94,12 +104,14 @@ function getConfig (options) {
       new HappyPack({
         id: 'js',
         threadPool: happyThreadPool,
-        loaders: [{
-          path: 'babel-loader',
-          query: {
-            cacheDirectory: true
+        loaders: [
+          {
+            path: 'babel-loader',
+            query: {
+              cacheDirectory: true
+            }
           }
-        }]
+        ]
       }),
       new HappyPack({
         id: 'css',
@@ -114,15 +126,17 @@ function getConfig (options) {
       }),
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
     ]
-  }
+  };
 
   if (isDev) {
     config.plugins.push(new webpack.HotModuleReplacementPlugin())
 
-    config.plugins.push(new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'template/index.html'
-    }))
+    config.plugins.push(
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: 'template/index.html'
+      })
+    )
 
     config.devServer = {
       hot: true,
@@ -137,16 +151,18 @@ function getConfig (options) {
       proxy: options.proxy,
       compress: true,
       https: options.https || false
-    }
+    };
   } else {
     config.devtool = 'source-map'
 
-    config.plugins.push(new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: `template/${options.projectShortName}.html`,
-      branch: process.env.GIT_BRANCH || 'master',
-      commit: process.env.GIT_COMMIT || ''
-    }))
+    config.plugins.push(
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: `template/${options.projectShortName}.html`,
+        branch: process.env.GIT_BRANCH || 'master',
+        commit: process.env.GIT_COMMIT || ''
+      })
+    )
 
     config.optimization = config.optimization || {}
     config.optimization.minimizer = [
@@ -155,17 +171,19 @@ function getConfig (options) {
           mangle: false // Note `mangle.properties` is `false` by default.
         }
       })
-    ]
+    ];
   }
 
   // 要后于 HtmlWebpackPlugin
-  config.plugins.push(new AddAssetHtmlPlugin({
-    filepath: path.resolve(`./build/dll/${getDLLFileName()}`),
-    outputPath: 'dll',
-    includeSourcemap: false,
-    hash: true,
-    publicPath: options.publicPath + 'dll/'
-  }))
+  config.plugins.push(
+    new AddAssetHtmlPlugin({
+      filepath: path.resolve(`./build/dll/${getDLLFileName()}`),
+      outputPath: 'dll',
+      includeSourcemap: false,
+      hash: true,
+      publicPath: options.publicPath + 'dll/'
+    })
+  )
 
   return config
 }

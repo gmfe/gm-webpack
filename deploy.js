@@ -1,4 +1,4 @@
-const {shellExec} = require('./service')
+const { shellExec } = require('./service')
 
 shellExec('NODE_ENV=production node ./node_modules/gm-webpack/dll.js')
 

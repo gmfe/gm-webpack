@@ -3,10 +3,10 @@ const path = require('path')
 const os = require('os')
 const fs = require('fs')
 const HappyPack = require('happypack')
-const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const {getJSON, getDllVersionHash} = require('./service')
+const { getJSON, getDllVersionHash } = require('./service')
 const packageJSON = getJSON('./package.json')
 
 const env = process.env.NODE_ENV
@@ -22,7 +22,7 @@ function getConfig (options) {
   const config = {
     mode: env,
     entry: {
-      'dll': options.dll
+      dll: options.dll
     },
     output: {
       path: path.resolve('build'),
@@ -31,25 +31,28 @@ function getConfig (options) {
       publicPath: options.publicPath
     },
     module: {
-      rules: [{
-        test: /\.js$/,
-        loader: 'happypack/loader?id=js'
-      }, {
-        test: /\.(css|less)$/,
-        loader: [
-          MiniCssExtractPlugin.loader,
-          'happypack/loader?id=css'
-        ]
-      }, {
-        test: /(fontawesome-webfont|glyphicons-halflings-regular|iconfont)\.(woff|woff2|ttf|eot|svg)($|\?)/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 1024,
-            name: 'font/[name].[hash:8].[ext]'
-          }
-        }]
-      }]
+      rules: [
+        {
+          test: /\.js$/,
+          loader: 'happypack/loader?id=js'
+        },
+        {
+          test: /\.(css|less)$/,
+          loader: [MiniCssExtractPlugin.loader, 'happypack/loader?id=css']
+        },
+        {
+          test: /(fontawesome-webfont|glyphicons-halflings-regular|iconfont)\.(woff|woff2|ttf|eot|svg)($|\?)/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 1024,
+                name: 'font/[name].[hash:8].[ext]'
+              }
+            }
+          ]
+        }
+      ]
     },
     plugins: [
       new webpack.DefinePlugin({
@@ -62,12 +65,14 @@ function getConfig (options) {
       new HappyPack({
         id: 'js',
         threadPool: happyThreadPool,
-        loaders: [{
-          path: 'babel-loader',
-          query: {
-            cacheDirectory: true
+        loaders: [
+          {
+            path: 'babel-loader',
+            query: {
+              cacheDirectory: true
+            }
           }
-        }]
+        ]
       }),
       new HappyPack({
         id: 'css',
@@ -76,7 +81,7 @@ function getConfig (options) {
       }),
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
     ]
-  }
+  };
 
   if (!isDev) {
     config.devtool = 'source-map'
@@ -88,7 +93,7 @@ function getConfig (options) {
           mangle: false // Note `mangle.properties` is `false` by default.
         }
       })
-    ]
+    ];
   }
 
   return config

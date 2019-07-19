@@ -15,20 +15,24 @@ function shellExec (com) {
 }
 
 function getDllVersionHash (dlls, packageJSON) {
-  const {devDependencies, dependencies} = packageJSON
+  const { devDependencies, dependencies } = packageJSON
   const dllVersionHash = _.map(dlls, v => {
     if (devDependencies[v]) {
       return `${v}@${devDependencies[v]}`
     } else if (dependencies[v]) {
       return `${v}@${dependencies[v]}`
     }
-  }).join('')
+  }).join('');
 
-  return crypto.createHmac('sha256', '').update(dllVersionHash).digest('hex').slice(0, 8)
+  return crypto
+    .createHmac('sha256', '')
+    .update(dllVersionHash)
+    .digest('hex')
+    .slice(0, 8)
 }
 
 module.exports = {
   getJSON,
   shellExec,
   getDllVersionHash
-}
+};
