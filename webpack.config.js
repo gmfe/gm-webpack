@@ -24,7 +24,7 @@ function getDLLFileName () {
 
   return _.find(fileNames, fileName =>
     fileName.endsWith(`${hash}.dll.bundle.js`)
-  )
+  );
 }
 
 function getConfig (options) {
@@ -50,7 +50,7 @@ function getConfig (options) {
               }
               return (
                 context.includes('locales') && !context.includes('node_modules')
-              )
+              );
             },
             minSize: 0,
             chunks: 'initial',
@@ -81,6 +81,10 @@ function getConfig (options) {
               }
             }
           ]
+        },
+        {
+          test: /(\w|\W)+\.svg$/,
+          use: ['@svgr/webpack']
         },
         {
           test: /(fontawesome-webfont|glyphicons-halflings-regular|iconfont)\.(woff|woff2|ttf|eot|svg)($|\?)/,
@@ -136,7 +140,7 @@ function getConfig (options) {
         filename: 'index.html',
         template: 'template/index.html'
       })
-    )
+    );
 
     config.devServer = {
       hot: true,
@@ -162,7 +166,7 @@ function getConfig (options) {
         branch: process.env.GIT_BRANCH || 'master',
         commit: process.env.GIT_COMMIT || ''
       })
-    )
+    );
 
     config.optimization = config.optimization || {}
     config.optimization.minimizer = [
@@ -183,7 +187,7 @@ function getConfig (options) {
       hash: true,
       publicPath: options.publicPath + 'dll/'
     })
-  )
+  );
 
   return config
 }
