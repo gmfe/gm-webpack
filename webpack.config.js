@@ -83,7 +83,7 @@ function getConfig (options) {
           ]
         },
         {
-          test: /(\w|\W)+\.svg$/,
+          test: /svg\/(\w|\W)+\.svg$/,
           use: ['@svgr/webpack']
         },
         {
