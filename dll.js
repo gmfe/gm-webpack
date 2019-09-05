@@ -37,5 +37,5 @@ if (dllFileName) {
     JSON.stringify({ hash: dllVersionHash })
   )
 
-  shellExec(`NODE_ENV=${env} webpack --config webpack.config.dll.js`)
+  shellExec(`DLL_ENV=true NODE_ENV=${env} webpack --config webpack.config.dll.js`)
 }
