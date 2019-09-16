@@ -1,7 +1,6 @@
 const webpack = require('webpack')
 const path = require('path')
 const os = require('os')
-const fs = require('fs')
 const HappyPack = require('happypack')
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -15,7 +14,7 @@ console.log('webpack.config.dll.js NODE_ENV', env)
 
 const isDev = env === 'development'
 
-function getConfig (options) {
+function getConfig(options) {
   // 生成一个文件，记录dll的版本，以便下次判断已构建过，避免重复构建
   const dllVersionHash = getDllVersionHash(options.dll, packageJSON)
 
@@ -81,7 +80,7 @@ function getConfig (options) {
       }),
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
     ]
-  };
+  }
 
   if (!isDev) {
     config.devtool = 'source-map'
@@ -93,7 +92,7 @@ function getConfig (options) {
           mangle: false // Note `mangle.properties` is `false` by default.
         }
       })
-    ];
+    ]
   }
 
   return config

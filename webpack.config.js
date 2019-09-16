@@ -18,16 +18,16 @@ const manifest = getJSON('./build/dll/dll.manifest.json')
 
 console.log('webpack.config.js NODE_ENV', env)
 
-function getDLLFileName () {
+function getDLLFileName() {
   const { hash } = getJSON('./build/dll/dll.version.json')
   const fileNames = fs.readdirSync('./build/dll/')
 
   return _.find(fileNames, fileName =>
     fileName.endsWith(`${hash}.dll.bundle.js`)
-  );
+  )
 }
 
-function getConfig (options) {
+function getConfig(options) {
   const config = {
     mode: env,
     entry: options.index || './js/index.js',
@@ -44,13 +44,13 @@ function getConfig (options) {
           locale: {
             name: 'locale',
             test: module => {
-              let { context } = module
+              const { context } = module
               if (!context) {
                 return false
               }
               return (
                 context.includes('locales') && !context.includes('node_modules')
-              );
+              )
             },
             minSize: 0,
             chunks: 'initial',
@@ -130,9 +130,10 @@ function getConfig (options) {
       }),
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
     ]
-  };
+  }
 
   if (isDev) {
+    config.devtool = 'cheap-module-eval-source-map'
     config.plugins.push(new webpack.HotModuleReplacementPlugin())
 
     config.plugins.push(
@@ -140,7 +141,7 @@ function getConfig (options) {
         filename: 'index.html',
         template: 'template/index.html'
       })
-    );
+    )
 
     config.devServer = {
       hot: true,
@@ -155,10 +156,8 @@ function getConfig (options) {
       proxy: options.proxy,
       compress: true,
       https: options.https || false
-    };
+    }
   } else {
-    config.devtool = 'source-map'
-
     config.plugins.push(
       new HtmlWebpackPlugin({
         filename: 'index.html',
@@ -166,7 +165,7 @@ function getConfig (options) {
         branch: process.env.GIT_BRANCH || 'master',
         commit: process.env.GIT_COMMIT || ''
       })
-    );
+    )
 
     config.optimization = config.optimization || {}
     config.optimization.minimizer = [
@@ -175,7 +174,7 @@ function getConfig (options) {
           mangle: false // Note `mangle.properties` is `false` by default.
         }
       })
-    ];
+    ]
   }
 
   // 要后于 HtmlWebpackPlugin
@@ -187,7 +186,7 @@ function getConfig (options) {
       hash: true,
       publicPath: options.publicPath + 'dll/'
     })
-  );
+  )
 
   return config
 }

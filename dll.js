@@ -6,7 +6,7 @@ const webpackDll = require('../../webpack.config.dll')
 const env = process.env.NODE_ENV
 
 let dllFileName = null
-let dllVersionHash = getDllVersionHash(
+const dllVersionHash = getDllVersionHash(
   webpackDll.entry.dll,
   getJSON('./package.json')
 )
