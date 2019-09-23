@@ -16,8 +16,6 @@ const env = process.env.NODE_ENV
 const isDev = env === 'development'
 const manifest = getJSON('./build/dll/dll.manifest.json')
 
-console.log('webpack.config.js NODE_ENV', env)
-
 function getDLLFileName() {
   const { hash } = getJSON('./build/dll/dll.version.json')
   const fileNames = fs.readdirSync('./build/dll/')
