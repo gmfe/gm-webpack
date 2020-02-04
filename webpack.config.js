@@ -60,11 +60,12 @@ function getConfig(options) {
     module: {
       rules: [
         {
-          test: /\.(js|tsx?)$/,
+          test: /\.js$/,
           loader: 'happypack/loader?id=js',
           ...options.jsModuleRule
         },
-        { test: /\.js$/, loader: 'source-map-loader', enforce: 'pre' },
+        { test: /\.tsx?$/, loader: 'babel-loader', exclude: /node_modules/ },
+        // { test: /\.js$/, loader: 'source-map-loader', enforce: 'pre' },
         {
           test: /\.(css|less)$/,
           loader: [MiniCssExtractPlugin.loader, 'happypack/loader?id=css']
