@@ -35,6 +35,9 @@ function getConfig(options) {
       chunkFilename: 'js/[id].[chunkhash:8].bundle.js',
       publicPath: options.publicPath
     },
+    resolve: {
+      extensions: ['.js', '.json', '.ts', '.tsx']
+    },
     optimization: {
       runtimeChunk: 'single',
       splitChunks: {
@@ -60,12 +63,11 @@ function getConfig(options) {
     module: {
       rules: [
         {
-          test: /\.js$/,
+          test: /\.(js|tsx?)$/,
           loader: 'happypack/loader?id=js',
           ...options.jsModuleRule
         },
-        { test: /\.tsx?$/, loader: 'babel-loader', exclude: /node_modules/ },
-        // { test: /\.js$/, loader: 'source-map-loader', enforce: 'pre' },
+        { test: /\.js$/, loader: 'source-map-loader', enforce: 'pre' },
         {
           test: /\.(css|less)$/,
           loader: [MiniCssExtractPlugin.loader, 'happypack/loader?id=css']

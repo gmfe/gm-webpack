@@ -29,10 +29,13 @@ function getConfig(options) {
       library: 'dll_library',
       publicPath: options.publicPath
     },
+    resolve: {
+      extensions: ['.js', '.json', '.ts', '.tsx']
+    },
     module: {
       rules: [
         {
-          test: /\.js$/,
+          test: /\.(js|tsx?)$/,
           loader: 'happypack/loader?id=js'
         },
         {
